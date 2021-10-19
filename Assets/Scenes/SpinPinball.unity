@@ -1731,6 +1731,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1682220615}
   - component: {fileID: 1682220616}
+  - component: {fileID: 1682220617}
   m_Layer: 0
   m_Name: Ball Spawner
   m_TagString: Untagged
@@ -1767,6 +1768,21 @@ MonoBehaviour:
   rangeOfSpawnDelays: {x: 1, y: 5}
   ball: {fileID: 4198005708979830082, guid: af24bb9ab0e5a2e4296f0930d95771ec, type: 3}
   maxBalls: 2
+--- !u!114 &1682220617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1682220614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63d32de56b531584a86a5bdb01a34193, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreNeeded: 10
+  sceneToLoad: EndScene
+  resetScore: 0
 --- !u!1 &1744838330
 GameObject:
   m_ObjectHideFlags: 0

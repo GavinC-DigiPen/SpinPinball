@@ -28,19 +28,28 @@ public class BallSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine("SpawnBall");
+        Invoke("SpawnBall", timeBetweenSpawns);
     }
 
-    private IEnumerator SpawnBall()
+    // Update is called once per frame
+    void Update()
     {
-        yield return new WaitForSeconds(timeBetweenSpawns);
+        Ball[] balls = FindObjectsOfType<Ball>();
+        if (balls.Length <= 0)
+        {
+            Instantiate(ball);
+        }
+    }
 
+    // Loop and spawn in balls
+    private void SpawnBall()
+    {
         Ball[] balls = FindObjectsOfType<Ball>();
         if (balls.Length < maxBalls)
         {
             Instantiate(ball);
         }
         timeBetweenSpawns = Random.Range(rangeOfSpawnDelays.x, rangeOfSpawnDelays.y);
-        StartCoroutine("SpawnBall");
+        Invoke("SpawnBall", timeBetweenSpawns);
     }
 }

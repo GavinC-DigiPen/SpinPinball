@@ -23,13 +23,11 @@ public class Ball : MonoBehaviour
     [Tooltip("The delay before the ball starts moving")]
     public float ballMoveDelay = 0.5f;
     [Tooltip("Button that will reset the ball to 0 0")]
-    public KeyCode resetBall = KeyCode.Space;
+    public KeyCode fixBall = KeyCode.Space;
     [Tooltip("Array of possible colors the ball can be")]
     public Color[] possibleBallColors;
     [Tooltip("A child object that points in the dirrection the ball will move (default points up)")]
     public GameObject velocityPointer;
-    [Tooltip("Object that is a particle effect")]
-    public GameObject particleEffectObj;
 
 
     private Rigidbody2D ballRB;
@@ -41,7 +39,7 @@ public class Ball : MonoBehaviour
         float rotation = Random.Range(0, 24) * 15;
         transform.Rotate(0, 0, rotation, Space.Self);
         ballRB = GetComponent<Rigidbody2D>();
-        StartCoroutine("DelayVelocity");
+        Invoke("DelayVelocity", ballMoveDelay);
 
         colorIndex = Random.Range(0, possibleBallColors.Length);
         GetComponent<SpriteRenderer>().color = possibleBallColors[colorIndex];
@@ -54,18 +52,18 @@ public class Ball : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(resetBall))
+        if (Input.GetKeyDown(fixBall))
         {
-            transform.position = new Vector2(0, 0);
+            float rotation = Random.Range(0, 24) * 15;
+            transform.Rotate(0, 0, rotation, Space.Self);
+            ballRB.velocity = transform.up * startingVelocity;
         }
 
         ballRB.velocity = Vector3.ClampMagnitude(ballRB.velocity, maxVelocity);
     }
 
-    private IEnumerator DelayVelocity()
+    private void DelayVelocity()
     {
-        yield return new WaitForSeconds(ballMoveDelay);
-
         if (velocityPointer)
         {
             Destroy(velocityPointer);
