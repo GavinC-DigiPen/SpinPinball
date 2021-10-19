@@ -20,10 +20,20 @@ public class Ball : MonoBehaviour
     public float startingVelocity = 8;
     [Tooltip("Max velocity")]
     public float maxVelocity = 10;
+    [Tooltip("The delay before the ball starts moving")]
+    public float ballMoveDelay = 0.5f;
     [Tooltip("Button that will reset the ball to 0 0")]
     public KeyCode resetBall = KeyCode.Space;
+    [Tooltip("Array of possible colors the ball can be")]
+    public Color[] possibleBallColors;
+    [Tooltip("A child object that points in the dirrection the ball will move (default points up)")]
+    public GameObject velocityPointer;
+    [Tooltip("Object that is a particle effect")]
+    public GameObject particleEffectObj;
+
 
     private Rigidbody2D ballRB;
+    private int colorIndex = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -31,7 +41,14 @@ public class Ball : MonoBehaviour
         float rotation = Random.Range(0, 24) * 15;
         transform.Rotate(0, 0, rotation, Space.Self);
         ballRB = GetComponent<Rigidbody2D>();
-        ballRB.velocity = transform.up * startingVelocity;
+        StartCoroutine("DelayVelocity");
+
+        colorIndex = Random.Range(0, possibleBallColors.Length);
+        GetComponent<SpriteRenderer>().color = possibleBallColors[colorIndex];
+        if (velocityPointer)
+        {
+            velocityPointer.GetComponent<SpriteRenderer>().color = possibleBallColors[colorIndex];
+        }
     }
 
     // Update is called once per frame
@@ -43,5 +60,40 @@ public class Ball : MonoBehaviour
         }
 
         ballRB.velocity = Vector3.ClampMagnitude(ballRB.velocity, maxVelocity);
+    }
+
+    private IEnumerator DelayVelocity()
+    {
+        yield return new WaitForSeconds(ballMoveDelay);
+
+        if (velocityPointer)
+        {
+            Destroy(velocityPointer);
+        }
+        ballRB.velocity = transform.up * startingVelocity;
+    }
+
+    // Check ball collision with goals
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        GoalInfo collisionInfo = collision.GetComponent<GoalInfo>();
+        if (collisionInfo)
+        {
+            if (collisionInfo.colorIndex == colorIndex)
+            {
+                GameManager.Score++;
+            }
+            else
+            {
+                GameManager.Score--;
+            }
+
+            if (GameManager.Score < 0)
+            {
+                GameManager.Score = 0;
+            }
+
+            Destroy(gameObject);
+        }
     }
 }
